@@ -24,9 +24,10 @@ wire rst = ~rst_n; // make reset active high
 
 reg [7:0] test_a;
 reg [7:0] test_b;
+reg [15:0] counter;
 
 initial begin
- test_a = 'b00000000;
+ test_a = 'b00000010;
  test_b = 'b00000000;
 end
 
@@ -38,12 +39,20 @@ assign spi_miso = 1'bz;
 assign avr_rx = 1'bz;
 assign spi_channel = 4'bzzzz;
 
-//assign led[4:0] = 5'b0;
+//assign led[4:1] = 4'b0;
 //assign led[6] = 1;
 
 //assign led[7] = rst;
 
-Or8Way GA (test_a, test_OUT[1]);
+//xorGate GA (led[7], led[6], led[5]);
 
-assign led = test_OUT[7:0];
+generate
+genvar i;
+for (i=0; i < 8; i = i+1) begin
+freqDivide #(.POW(21 + i), .SHIFT(2**(25) * i)) DV0 (clk, rst_n, led[i]);
+end
+endgenerate
+
+
+//assign led = test_OUT[7:0];
 endmodule
