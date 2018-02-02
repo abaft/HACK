@@ -13,7 +13,7 @@ Next pins 9-12 off the FPGA go to 4 more switches, these are to act as inputs to
 The LEDs on the Mojo v3 board act as outputs and are specified similarly.
 
 Switch Setting|Switch input|Mode|LED output
-:------------:|:----------:|:--:|:--------:
+:------:|:---------------|:------:|:---------------------------------------------
 0000|x,y,X,X|`AND`|X,X,X,X,X,X,X,out
 0001|x,y,X,X|`OR`|X,X,X,X,X,X,X,out
 0010|x,X,X,X|`NOT`|X,X,X,X,X,X,X,out
@@ -31,4 +31,5 @@ Switch Setting|Switch input|Mode|LED output
 1110|in,sel[0],sel[1],sel[2]|`DMUX8WAY`|out[7],out[6],out[5],out[4],out[3],out[2],out[1],out[0]
 1111|X,X,X,X|`NONE`|X,X,X,X,X,X,X,X
 
-
+I haven't included the MUX4WAY16 or MUX8WAY16 gates, this is because the I/O I had at the time wasn't quite big enough to really see them working. However they have reserved settings (1011 and 1100) to be implemented when I buy more switches. The logic for these gates is written.
+All logical operations were built on the `NAND` primitive, inline with the specification.
