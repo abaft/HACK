@@ -8,7 +8,7 @@ To set up the 'demo':
 
 Pins 5-8 off the FPGA go to 4 switches, these switches control the mode (pin 8 is the most significant bit).
 
-Next pins 9-12 off the FPGA go to 4 more switches, these are to act as inputs to the mode, the following table refers to the document specifying input variables for each bit (e.g. x,y,X,X) means switch on pin 9 is x and switch on pin 10 is y and the other switches do nothing.)
+Next pins 9-12 off the FPGA go to 4 more switches, these are to act as inputs to the mode, the following table refers to the document specifying input variables for each bit (e.g. x,y,X,X means switch on pin 9 is x and switch on pin 10 is y and the other switches do nothing.)
 
 The LEDs on the Mojo v3 board act as outputs and are specified similarly.
 
