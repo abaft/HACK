@@ -62,13 +62,13 @@ mux(sw2[0], sw2[1], sw2[2], MUX);
 // DMUX GATE
 DMux(sw2[0], sw2[1], DMUX[0], DMUX[7:1]);
 // AND16 GATE
-And16({14'b0 ,sw2[0], sw2[1]}, {14'b0 ,sw2[2], sw2[3]}, AND16);
+And16({14'b0 ,sw2[1:0]}, {14'b0 ,sw2[3:2]}, AND16);
 // OR16 GATE
-Or16({14'b0 ,sw2[0], sw2[1]}, {14'b0 ,sw2[2], sw2[3]}, OR16);
+Or16({14'b0 ,sw2[1:0]}, {14'b0 ,sw2[3:2]}, OR16);
 // NOT16 GATE
 Not16({'b111111111111 ,sw2[0], sw2[1], sw2[2], sw2[3]}, NOT16);
 // MUX16 GATE (use RST button as switch)
-Mux16({14'b0 ,sw2[0], sw2[1]}, {14'b0 ,sw2[2], sw2[3]}, rst, MUX16);
+Mux16({14'b0 ,sw2[1:0]}, {14'b0 ,sw2[3:2]}, rst, MUX16);
 // Or8Way GATE
 Or8Way({12'b0 ,sw2[0], sw2[1], sw2[2], sw2[3]}, OR8WAY);
 // MUX4WAY
