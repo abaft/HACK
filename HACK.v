@@ -28,7 +28,7 @@ module HACK(
 	 output [15:0] RAMOut
     );
 
-(*KEEP = "TRUE"*)reg [14:0] ROMAddressLine;
+reg [14:0] ROMAddressLine;
 wire [15:0] ROMOut;
 wire [14:0] PC;
 wire [15:0] RAMDataLine;
@@ -36,10 +36,10 @@ wire [14:0] RAMAddressLine;
 wire RAMLoad;
 wire [15:0] RAMOut;
 
-(* KEEP_HIERARCHY = "YES" *)RAM32K ROM (.data(ROMDataLine), .address(ROMAddressLine), .out(ROMOut), .load(ROMLoad));
-(* KEEP_HIERARCHY = "YES" *)RAM32K RAM (.data(RAMDataLine), .address(RAMAddressLine), .out(RAMOut), .load(RAMLoad));
+RAM16K ROM (.data(ROMDataLine), .clk(clk), .address(ROMAddressLine), .out(ROMOut), .load(ROMLoad));
+RAM16K RAM (.data(RAMDataLine), .clk(clk), .address(RAMAddressLine), .out(RAMOut), .load(RAMLoad));
 
-(* KEEP_HIERARCHY = "YES" *)CPU HACK (.clk(clk), .rst(ROMLoad), .inM(RAMOut), .outM(RAMDataLine), .writeM(RAMLoad),
+CPU HACK (.clk(clk), .rst(ROMLoad), .inM(RAMOut), .outM(RAMDataLine), .writeM(RAMLoad),
  .instruction(ROMOut), .pc(PC), .addressM(RAMAddressLine));
  
 always @(negedge clk)
