@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    09:38:52 02/01/2018 
+// Create Date:    20:01:04 03/08/2018 
 // Design Name: 
-// Module Name:    Mux4Way16 
+// Module Name:    Inc16 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,21 +18,12 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Mux4Way16(
-    input [15:0] w,
-	 input [15:0] x,
-    input [15:0] y,
-    input [15:0] z,
-    input [1:0] sel,
-    output [15:0] out
+module Inc16(
+    input [0:15] x,
+    output [0:15] out
     );
 	 
-	 wire [15:0] c0;
-	 wire [15:0] c1;
-	 
-	 Mux16 MX0 (w, x, sel[0], c0);
-	 Mux16 MX1 (y, z, sel[0], c1);
-	 Mux16 MX2 (c0, c1, sel[1], out);
+	 Add16(x, {16{1}}, out);
 
 
 endmodule

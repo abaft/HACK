@@ -19,48 +19,52 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module ALU(
-    input [0:15] x,
-    input [0:15] y,
-    input [0:5] control,  // [5] zx, [4] nx, [3] zy, [2] ny, [1] f, [0]no
-    output [0:15] out,  
+    input [15:0] x,
+    input [15:0] y,
+    input [5:0] control,  // [5] zx, [4] nx, [3] zy, [2] ny, [1] f, [0]no
+    output [15:0] out,  
     output zr,
     output ng
     );
 	 
-	 wire [0:15] Xz;
-	 wire [0:15] Yz;
-	 andGate AN1 (x, ~{16{control[5]}}, Xz);
-	 andGate(y, ~{16{control[3]}}, Yz);
+	 wire [15:0] Xz;
+	 wire [15:0] Yz;
+	 And16(x, ~{16{control[5]}}, Xz);
+	 And16(y, ~{16{control[3]}}, Yz);
 	 
 	 wire [0:15] Xneg;
 	 wire [0:15] Yneg;
 	 
-	 notGate(Xz, Xneg);
-	 notGate(Yz, Yneg);
+	 Not16(Xz, Xneg);
+	 Not16(Yz, Yneg);
 	 
-	 wire [0:15] Xout;
-	 wire [0:15] Yout;
+	 wire [15:0] Xout;
+	 wire [15:0] Yout;
 	 
 	 Mux16(Xz, Xneg, control[4], Xout);
 	 Mux16(Yz, Yneg, control[2], Yout);
 	 
-	 wire [0:15] XplusY;
+	 wire [15:0] XplusY;
 	 
 	 Add16(Xout, Yout, XplusY);
 	 
-	 wire [0:15] XandY;
+	 wire [15:0] XandY;
 	 
 	 And16(Xout, Yout, XandY);
 	 
-	 wire [0:15] almostOut;
+	 wire [15:0] almostOut;
 	 
 	 Mux16(XandY, XplusY, control[1], almostOut);
 	 
-	 wire [0:15] negOut;
+	 wire [15:0] negOut;
 	 
-	 notGate(almostOut, negOut);	 
+	 Not16(almostOut, negOut);	 
 	 
 	 Mux16(almostOut, negOut, control[0], out);
+	 
+	 assign ng = out[15];
+	 Or16Way(out, notzr);
+	 notGate(notzr, zr);
 	 
 
 endmodule

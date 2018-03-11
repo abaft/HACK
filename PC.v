@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    09:38:52 02/01/2018 
+// Create Date:    20:05:51 03/08/2018 
 // Design Name: 
-// Module Name:    Mux4Way16 
+// Module Name:    PC 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,21 +18,26 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Mux4Way16(
-    input [15:0] w,
-	 input [15:0] x,
-    input [15:0] y,
-    input [15:0] z,
-    input [1:0] sel,
-    output [15:0] out
+module PC(
+    input [0:15] in,
+    input load,
+    input rst,
+    input inc,
+    input clk,
+    output [0:15] out
     );
 	 
-	 wire [15:0] c0;
-	 wire [15:0] c1;
+	 wire [0:15] c0;
+	 wire [0:15] c1;
+	 wire [0:15] c2;
+	 wire [0:15] regIn;
 	 
-	 Mux16 MX0 (w, x, sel[0], c0);
-	 Mux16 MX1 (y, z, sel[0], c1);
-	 Mux16 MX2 (c0, c1, sel[1], out);
-
-
+	 Inc16(out, c2);
+	 
+	 Mux16(c0 ,in, load, c1);
+	 Mux16(c1, 16'b0, rst, regIn);
+	 Mux16(out, c2, inc, c0);
+	 
+	 Register(.data(regIn), .clk(clk), .load(1), .out(out));
+	 
 endmodule

@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    09:38:52 02/01/2018 
+// Create Date:    22:54:18 03/08/2018 
 // Design Name: 
-// Module Name:    Mux4Way16 
+// Module Name:    RAM32K
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,21 +18,25 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module Mux4Way16(
-    input [15:0] w,
-	 input [15:0] x,
-    input [15:0] y,
-    input [15:0] z,
-    input [1:0] sel,
-    output [15:0] out
+module RAM32K(
+    input [0:15] data,
+    input load,
+    input [0:14] address,
+    input clk,
+    output [0:15] out
     );
 	 
-	 wire [15:0] c0;
-	 wire [15:0] c1;
-	 
-	 Mux16 MX0 (w, x, sel[0], c0);
-	 Mux16 MX1 (y, z, sel[0], c1);
-	 Mux16 MX2 (c0, c1, sel[1], out);
+    reg [0:15] Data [0:32767];
+    reg [0:15] Out;
 
-
+    always @(posedge clk)
+     begin
+      if (load)
+       begin
+         Data[address] <= data;
+       end
+         Out <= Data[address];
+     end
+	  
+    assign out = Out;
 endmodule

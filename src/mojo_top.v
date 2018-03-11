@@ -18,14 +18,12 @@ module mojo_top(
     input avr_tx, // AVR Tx => FPGA Rx
     output avr_rx, // AVR Rx => FPGA Tx
     input avr_rx_busy, // AVR Rx buffer full
-    input [3:0] sw1,
-	 input [3:0] sw2,
-	 input [5:0] ctrl
+    input [16:0] ROMDataLine,
+	 input [14:0] ROMAddressLineCtl,
+	 input ROMLoad
 	 );
 
 wire rst = ~rst_n; // make reset active high
-
-reg [7:0] LEDCTRL;
 
 // these signals should be high-z when not used
 assign spi_miso = 1'bz;
@@ -33,11 +31,22 @@ assign avr_rx = 1'bz;
 assign spi_channel = 4'bzzzz;
 
 //assign led = LEDCTRL;
+wire slowClock;
 
-reg [15:0] a = 16'b1101010001001110;
-reg [15:0] b = 16'b0100101101101101;
-reg c;
+assign led[7] = slowClock;
+reg [15:0] PC;
 
-ALU(.x(sw1), .y(sw2), .control(ctrl), .out(led[3:0]), .zr(led[4]), .ng(led[5]));
+freqDivide #(.POW(25)) (clk, 1, slowClock);
+
+// HackComputer
+
+(* KEEP = "YES" *)HACK(
+    .ROMAddressLineCtl(ROMAddressLineCtl),
+	 .ROMDataLine(ROMDataLine),
+	 .ROMLoad(ROMLoad),
+	 .rst(rst),
+	 .clk(slowClock),
+	 .RAMOut(led[6:0])
+    );
 
 endmodule
