@@ -33,10 +33,10 @@ assign spi_channel = 4'bzzzz;
 //assign led = LEDCTRL;
 wire slowClock;
 
-assign led[7] = clk;
+assign led[7] = slowClock;
 reg [15:0] PC;
 
-freqDivide #(.POW(25)) (clk, 1, slowClock);
+freqDivide #(.POW(23)) (clk, 1, slowClock);
 
 // HackComputer
 
@@ -45,8 +45,9 @@ HACK(
 	 .ROMDataLine(ROMDataLine),
 	 .ROMLoad(ROMLoad),
 	 .rst(rst),
-	 .clk(clk),
-	 .RAMOut(led[6:0])
+	 .clk(slowClock),
+	 .PCout(led[2:0]),
+	 .DOut(led[6:3])
     );
 
 endmodule

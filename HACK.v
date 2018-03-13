@@ -25,7 +25,9 @@ module HACK(
 	 input rst,
 	 input clk,
 	 output [14:0] PCout,
-	 output [15:0] RAMOut
+	 output [15:0] RAMOut,
+	 output [15:0] DOut,
+	 output CtoAReg
     );
 
 reg [14:0] ROMAddressLine;
@@ -35,18 +37,20 @@ wire [15:0] RAMDataLine;
 wire [14:0] RAMAddressLine;
 wire RAMLoad;
 wire [15:0] RAMOut;
+wire ResetCPU;
 
+orGate(rst, ROMLoad, ResetCPU);
 RAM16K ROM (.data(ROMDataLine), .clk(clk), .address(ROMAddressLine), .out(ROMOut), .load(ROMLoad));
 RAM16K RAM (.data(RAMDataLine), .clk(clk), .address(RAMAddressLine), .out(RAMOut), .load(RAMLoad));
 
-CPU HACK (.clk(clk), .rst(ROMLoad), .inM(RAMOut), .outM(RAMDataLine), .writeM(RAMLoad),
- .instruction(ROMOut), .pc(PC), .addressM(RAMAddressLine));
+CPU HACK (.clk(clk), .rst(ResetCPU), .inM(RAMOut), .outM(RAMDataLine), .writeM(RAMLoad),
+ .instruction(ROMOut), .pc(PC), .DOut(DOut), .addressM(RAMAddressLine));
  
-always @(negedge clk)
+always @(PC or ROMLoad)
 begin
   if (~ROMLoad)
   begin
-  ROMAddressLine <= PC;
+    ROMAddressLine <= PC;
   end
   else
   begin
@@ -54,5 +58,5 @@ begin
   end
 end
 
-assign PCOut = ROMAddressLine;
+assign PCout = ROMAddressLine;
 endmodule

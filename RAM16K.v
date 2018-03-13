@@ -28,6 +28,13 @@ module RAM16K(
 	 
     reg [0:15] Data [0:8191];
     reg [0:15] Out;
+	 initial begin
+	 	Data[0] <= 16'b0000000000000011;
+	   Data[1] <= 16'b1110011111010000;
+	   Data[2] <= 16'b1110011111010000;
+	   Data[3] <= 16'b1110000010010000;
+	   Data[4] <= 16'b1110101000000111;
+	 end
 
     always @(posedge clk)
      begin

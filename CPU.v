@@ -40,7 +40,9 @@ module CPU(
     output writeM,
     output [14:0] addressM, // 
     output [14:0] pc,
+	 output [15:0] DOut,
     input clk
+	 //output CtoAReg
     );
 	 
 	 wire CtoMuxAReg, CtoAReg, CtoDReg, CtoALU;
@@ -79,21 +81,23 @@ module CPU(
 	 // JumpGT: When ALU greaterthan zero
 	 wire notNg;
 	 notGate(ng, notNg);
-	 andGate(notNg, jmpEQ, CtoPC1);
+	 andGate(notNg, jmpGT, CtoPC1);
 	 //JumpLT: When ALU less than zero
 	 andGate(ng, jmpLT, CtoPC2);
-	 
-	 Or8Way({CtoPC0, CtoPC1, CtoPC2, {5{0}}}, CtoPC);
-	 
+	 wire Ctp01;
+	 orGate(CtoPC0, CtoPC1, Ctp01);
+	 orGate(Ctp01, CtoPC2, CtoPC);
 	 // Loads the ALU with the ALU instructions, for an A instruction this shouldn't matter
 	 ALU(.x(D), .y(AM), .control(instruction[11:6]), .out(outM), .zr(zr), .ng(ng));
 	 
 	 // Registers and Counters
 	 Register(.data(MuxAReg), .out(addressM), .clk(clk), .load(CtoAReg));
 	 Register(.data(outM), .out(D), .clk(clk), .load(CtoDReg));
-	 PC(.in(addressM), .load(CtoPC), .rst(rst), .clk(clk), .inc(1), .out(pc));
+	 PC(.in(addressM), .load(CtoPC), .rst(rst), .clk(~clk), .inc(1), .out(pc));
 	 
 	 // Muxs
 	 Mux16(outM, instruction, CtoMuxAReg, MuxAReg);
 	 Mux16(addressM, inM, CtoMuxALU, AM);
+
+    assign DOut = D;
 endmodule
