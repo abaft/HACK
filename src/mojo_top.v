@@ -36,7 +36,7 @@ wire slowClock;
 assign led[7] = slowClock;
 reg [15:0] PC;
 
-freqDivide #(.POW(23)) (clk, 1, slowClock);
+freqDivide #(.POW(28)) (clk, 1, slowClock);
 
 // HackComputer
 
