@@ -41,10 +41,10 @@ wire ResetCPU;
 
 orGate(rst, ROMLoad, ResetCPU);
 RAM16K ROM (.data(ROMDataLine), .clk(clk), .address(ROMAddressLine), .out(ROMOut), .load(ROMLoad));
-RAM16K RAM (.data(RAMDataLine), .clk(clk), .address(RAMAddressLine), .out(RAMOut), .load(RAMLoad));
+RAM16K RAM (.data(RAMDataLine), .clk(~clk), .address(RAMAddressLine), .out(RAMOut), .load(RAMLoad));
 
 CPU HACK (.clk(clk), .rst(ResetCPU), .inM(RAMOut), .outM(RAMDataLine), .writeM(RAMLoad),
- .instruction(ROMOut), .pc(PC), .DOut(DOut), .addressM(RAMAddressLine));
+ .instruction(ROMOut), .pc(PC), .OutR(DOut), .addressM(RAMAddressLine));
  
 always @(PC or ROMLoad)
 begin

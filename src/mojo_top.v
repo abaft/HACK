@@ -18,8 +18,12 @@ module mojo_top(
     input avr_tx, // AVR Tx => FPGA Rx
     output avr_rx, // AVR Rx => FPGA Tx
     input avr_rx_busy, // AVR Rx buffer full
-    input [15:0] ROMDataLine,
-	 input [14:0] ROMAddressLineCtl,
+    output [6:0] Ones,
+	 output [6:0] Tens,
+	 output [6:0] Hundreds,
+	 output [6:0] Thousends,
+	 output [6:0] TenThousends,
+	 output negIndicator,
 	 input ROMLoad
 	 );
 
@@ -36,18 +40,53 @@ wire slowClock;
 assign led[7] = slowClock;
 reg [15:0] PC;
 
-freqDivide #(.POW(28)) (clk, 1, slowClock);
+freqDivide #(.POW(20)) (clk, 1, slowClock);
+
+wire [15:0] DOut;
 
 // HackComputer
 
 HACK(
-    .ROMAddressLineCtl(ROMAddressLineCtl),
-	 .ROMDataLine(ROMDataLine),
+    .ROMAddressLineCtl(),
+	 .ROMDataLine(),
 	 .ROMLoad(ROMLoad),
 	 .rst(rst),
 	 .clk(slowClock),
-	 .PCout(led[2:0]),
-	 .DOut(led[6:3])
+	 .PCout(led[6:0]),
+	 .DOut(DOut)
+    );
+	 
+wire [3:0] bcd [4:0];
+BCD(
+    .binary(DOut), 
+    .TenThousands(bcd[4]), 
+    .Thousands(bcd[3]), 
+    .Hundreds(bcd[2]), 
+    .Tens(bcd[1]), 
+    .Ones(bcd[0])
+    );
+	 
+seg7  (
+    .bcd(bcd[0]), 
+    .seg(Ones)
+    );
+seg7  (
+    .bcd(bcd[1]), 
+    .seg(Tens)
+    );
+seg7  (
+    .bcd(bcd[2]), 
+    .seg(Hundreds)
+    );
+seg7  (
+    .bcd(bcd[3]), 
+    .seg(Thousends)
+    );
+seg7  (
+    .bcd(bcd[4]), 
+    .seg(TenThousends)
     );
 
+//assign led[6:3] = DOut;
+assign negIndicator = DOut[15];
 endmodule

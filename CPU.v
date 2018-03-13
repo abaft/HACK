@@ -27,8 +27,8 @@ Indicator  Addresss
 Will load A register with a value from RAM
 
 Instruction Instruction
-1         11            0     000000 0  0  0      0     0  0 LSB
-Indicator Expandability readM ALU    dA dD writeM JmpLT EQ GT
+1         1             1      0     000000 0  0  0      0     0  0 LSB
+Indicator Expandability dOurR readM ALU    dA dD writeM JmpLT EQ GT
 Will exicute an operation using the ALU and writing to RAM
 */
 
@@ -41,6 +41,7 @@ module CPU(
     output [14:0] addressM, // 
     output [14:0] pc,
 	 output [15:0] DOut,
+	 output reg [15:0] OutR,
     input clk
 	 //output CtoAReg
     );
@@ -58,9 +59,14 @@ module CPU(
 	 // Decode
 	 notGate(instruction[15], CtoMuxAReg);
 	 notGate(instruction[15], CtoAReg0);
-	 wire c0;
-	 andGate(instruction[15], instruction[14], c0);
-	 andGate(c0, instruction[13], Cinst);
+
+	 andGate(instruction[15], instruction[14], Cinst);
+	 
+	 always @(negedge clk)
+	 begin
+	   if (~instruction[13] && Cinst)
+		  OutR = D;
+	 end
 	 
 	 // Selects between memory or A register
 	 andGate(Cinst, instruction[12], CtoMuxALU);
